@@ -1,1 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sensores de luz e o acompanhamento da radiação solar</title>
+<meta name="description" content="Laboratório interativo sobre sensores de luz (LDR e fotodiodo), a física da medida da radiação solar e o rastreamento solar em robótica.">
+<meta name="theme-color" content="#14213d">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sensores de luz e o acompanhamento da radiação solar">
+<meta property="og:description" content="Simuladores interativos de LDR, fotodiodo, lei do cosseno, rastreador solar e limitações dos sensores.">
+<meta property="og:locale" content="pt_BR">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%98%80%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#14213d;--mute:#5b6478;--line:#d9dde5;--sun:#e89f00;--teal:#0f8b8d;--red:#b8432f;--grid:#e6e9ef}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1624;--card:#17213a;--ink:#e8ecf5;--mute:#9aa5bd;--line:#2c3a5a;--sun:#ffb81f;--teal:#3cc4c6;--red:#ef7a64;--grid:#25324f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:56px 20px 36px;border-bottom:4px solid var(--sun);max-width:980px;margin:auto}
+h1{font:700 clamp(30px,5vw,52px)/1.1 Georgia,"Times New Roman",serif;margin:0 0 14px;max-width:18em}
+header p{color:var(--mute);max-width:40em;margin:0}
+nav{max-width:980px;margin:0 auto;padding:12px 20px;display:flex;gap:8px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);z-index:5}
+nav a{color:var(--ink);text-decoration:none;border:1px solid var(--line);padding:6px 12px;border-radius:6px;font-size:14px}
+nav a:hover,nav a:focus-visible{border-color:var(--teal);outline:2px solid var(--teal)}
+main{max-width:980px;margin:auto;padding:0 20px 60px}
+section{margin-top:44px;scroll-margin-top:64px}
+h2{font:700 clamp(22px,3.5vw,30px)/1.2 Georgia,serif;margin:0 0 6px}
+.q{color:var(--teal);font-weight:600;margin:0 0 14px}
+.lab{display:grid;grid-template-columns:1fr 1fr;gap:20px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;margin:16px 0}
+@media(max-width:760px){.lab{grid-template-columns:1fr}}
+canvas{width:100%;height:auto;display:block;background:var(--card);border-radius:6px}
+label{display:block;font-size:14px;color:var(--mute);margin-top:12px}
+label b{color:var(--ink);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--teal)}
+.out{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.out div{flex:1;min-width:110px;border-left:4px solid var(--sun);padding:2px 10px;font-size:13px;color:var(--mute)}
+.out strong{display:block;font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums}
+button{font:inherit;font-size:14px;padding:8px 14px;border-radius:6px;border:1px solid var(--teal);background:var(--teal);color:#fff;cursor:pointer;margin:10px 8px 0 0}
+button.alt{background:transparent;color:var(--teal)}
+button:focus-visible{outline:3px solid var(--sun)}
+.ans{border-left:4px solid var(--teal);padding:4px 16px;margin:14px 0;background:color-mix(in srgb,var(--teal) 8%,transparent)}
+.ans h3{margin:6px 0;font-size:16px}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line)}
+pre{background:#101826;color:#dbe4f5;padding:14px;border-radius:8px;overflow:auto;font-size:13px;line-height:1.5}
+details{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:10px 14px;margin:8px 0}
+summary{cursor:pointer;font-weight:600}
+.eq{font-family:Georgia,serif;font-style:italic;background:var(--card);border:1px solid var(--line);padding:6px 12px;border-radius:6px;display:inline-block;margin:4px 0}
+footer{max-width:980px;margin:auto;padding:20px;color:var(--mute);font-size:14px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<header>
+<h1>Sensores de luz e o acompanhamento da radiação solar</h1>
+<p>Foco: radiação eletromagnética e sensores. Um laboratório interativo sobre a física da medida e sobre como a robótica usa essas medidas para seguir o Sol. Cada seção responde a uma questão orientadora, e você pode testar a resposta nos simuladores.</p>
+</header>
+<nav aria-label="Seções">
+<a href="#q1">1. LDR e fotodiodo</a><a href="#q2">2. Comparar posições</a><a href="#q3">3. Melhor posição</a><a href="#q4">4. Limitações</a>
+</nav>
+<main>
 
+<section id="q1">
+<h2>Como um LDR ou fotodiodo responde à luz?</h2>
+<p class="q">Mova a irradiância e compare as duas respostas.</p>
+<p>A luz é radiação eletromagnética: fótons com energia <span class="eq">E = h·f</span>. Num <b>LDR</b> (sulfeto de cádmio), fótons liberam portadores de carga e a <b>resistência cai</b>, de forma aproximadamente de potência: <span class="eq">R = R₁₀·(L/10)<sup>−γ</sup></span>. Num <b>fotodiodo</b>, cada fóton absorvido gera um par elétron-lacuna e a <b>corrente cresce linearmente</b> com a irradiância: <span class="eq">I = S·A·E</span>.</p>
+<div class="lab">
+<div>
+<canvas id="c1" width="600" height="340" aria-label="Gráfico da tensão de saída versus irradiância"></canvas>
+</div>
+<div>
+<label>Irradiância E: <b id="v1e">500</b> W/m² (≈ <span id="v1l"></span> lux)</label>
+<input id="s1e" type="range" min="0" max="100" value="82" aria-label="Irradiância">
+<label>Expoente γ do LDR: <b id="v1g">0,7</b></label>
+<input id="s1g" type="range" min="5" max="9" value="7">
+<div class="out">
+<div>Resistência do LDR<strong id="o1r"></strong></div>
+<div>Tensão (divisor 10 kΩ)<strong id="o1v"></strong></div>
+<div>Fotodiodo (1 kΩ)<strong id="o1p"></strong></div>
+</div>
+<p style="font-size:13px;color:var(--mute)">Circuitos: LDR em divisor de tensão com 10 kΩ a 3,3 V; fotodiodo com resistor de 1 kΩ (S ≈ 0,5 A/W, A = 5 mm²). Valores típicos, ilustrativos.</p>
+</div>
+</div>
+<div class="ans"><h3>Resposta</h3>O LDR responde de forma <b>não linear</b> (logarítmica na prática): é sensível a pouca luz e satura rápido com muita. O fotodiodo responde de forma <b>linear</b> e rápida (microssegundos, contra dezenas de ms do LDR), o que o torna melhor para medir. Note na curva como o LDR achata perto de 3,3 V.</div>
+</section>
+
+<section id="q2">
+<h2>Como comparar a intensidade luminosa em diferentes posições?</h2>
+<p class="q">Varie o ângulo e a distância, registre medições e compare.</p>
+<p>Duas leis geométricas dominam: a <b>lei do cosseno de Lambert</b>, <span class="eq">E = E₀·cos θ</span> (θ é o ângulo entre a luz e a normal do sensor), e a <b>lei do inverso do quadrado</b> para uma lâmpada próxima, <span class="eq">E ∝ 1/d²</span>. Para comparar posições, mantenha o mesmo sensor, a mesma escala e registre cada condição.</p>
+<div class="lab">
+<div><canvas id="c2" width="600" height="300" aria-label="Sensor inclinado recebendo luz"></canvas></div>
+<div>
+<label>Ângulo de incidência θ: <b id="v2a">0</b>°</label>
+<input id="s2a" type="range" min="0" max="89" value="0">
+<label>Distância da lâmpada d: <b id="v2d">0,50</b> m</label>
+<input id="s2d" type="range" min="20" max="200" value="50">
+<div class="out"><div>Irradiância medida<strong id="o2e"></strong></div><div>Fração do máximo<strong id="o2f"></strong></div></div>
+<button id="b2r">Registrar medição</button><button id="b2c" class="alt">Limpar</button>
+</div>
+</div>
+<table><thead><tr><th>#</th><th>θ</th><th>d (m)</th><th>E (W/m²)</th><th>Relativa à maior</th></tr></thead><tbody id="t2"></tbody></table>
+<div class="ans"><h3>Resposta</h3>Compare sempre sob a mesma geometria de referência, ou corrija pelo cosseno e pela distância. Um sensor inclinado 60° lê só metade (cos 60° = 0,5) mesmo com a mesma luz. Em robótica, sensores a ângulos diferentes produzem leituras diferentes justamente por isso, e é essa diferença que se usa para orientar o robô.</div>
+</section>
+
+<section id="q3">
+<h2>É possível identificar o melhor posicionamento de um coletor solar?</h2>
+<p class="q">Sim, e um robô faz isso sozinho. Mova o Sol e veja o rastreador seguir.</p>
+<p>Dois LDRs (ou fotodiodos) ficam inclinados ±20° em relação à normal do painel. Se o Sol está alinhado, os dois leem igual. Se não, o <b>erro</b> <span class="eq">e = L<sub>dir</sub> − L<sub>esq</sub></span> indica para que lado girar. Isso é um controle proporcional: <span class="eq">φ ← φ + K·e</span>. Alternativamente, uma <b>varredura</b> mede a irradiância em vários ângulos e escolhe o máximo.</p>
+<div class="lab">
+<div><canvas id="c3" width="600" height="320" aria-label="Rastreador solar com dois sensores"></canvas></div>
+<div>
+<label>Posição do Sol α: <b id="v3a">35</b>°</label>
+<input id="s3a" type="range" min="-80" max="80" value="35">
+<label><input type="checkbox" id="k3" checked style="width:auto"> Rastreamento automático (malha fechada)</label>
+<div class="out"><div>Sensor esq.<strong id="o3l"></strong></div><div>Sensor dir.<strong id="o3r"></strong></div><div>Erro e<strong id="o3e"></strong></div></div>
+<div class="out"><div>Ângulo do painel φ<strong id="o3p"></strong></div><div>Potência relativa<strong id="o3w"></strong></div></div>
+<button id="b3">Fazer varredura</button>
+<canvas id="c3b" width="600" height="150" style="margin-top:10px" aria-label="Resultado da varredura"></canvas>
+</div>
+</div>
+<details><summary>Código de exemplo (Arduino)</summary>
+<pre>const int LDR_ESQ = A0, LDR_DIR = A1;
+const float K = 0.02;       // ganho proporcional
+float angulo = 90;          // posição do servo (graus)
+#include &lt;Servo.h&gt;
+Servo servo;
+
+void setup() { servo.attach(9); }
+
+void loop() {
+  int esq = analogRead(LDR_ESQ);
+  int dir = analogRead(LDR_DIR);
+  int erro = dir - esq;               // positivo: Sol à direita
+  if (abs(erro) &gt; 20) {               // zona morta contra ruído
+    angulo = constrain(angulo + K * erro, 10, 170);
+    servo.write(angulo);
+  }
+  delay(20);
+}</pre></details>
+<div class="ans"><h3>Resposta</h3>É possível, de duas formas: por <b>diferença entre sensores</b> (rastreamento contínuo, simples e barato) ou por <b>varredura</b> (busca do máximo). Ambos acham a direção do Sol, mas só indicam <i>onde</i> ele está, e não quanto de energia o coletor recebe, como mostra a próxima seção.</div>
+</section>
+
+<section id="q4">
+<h2>Quais são as limitações desses sensores para medir a energia solar?</h2>
+<p class="q">Ative e desative sensores para ver quanto do espectro solar cada um enxerga.</p>
+<p>Um sensor mede uma grandeza elétrica, não energia. A radiação solar vai de ~300 nm a ~2500 nm, mas cada sensor responde só a uma faixa. A fração mostrada é a razão entre a área sob (espectro solar × resposta do sensor) e a área do espectro solar, uma estimativa ilustrativa.</p>
+<div class="lab">
+<div><canvas id="c4" width="600" height="340" aria-label="Espectro solar e resposta espectral dos sensores"></canvas></div>
+<div>
+<label><input type="checkbox" id="k4l" checked style="width:auto"> LDR (CdS, pico ≈ 540 nm)</label>
+<label><input type="checkbox" id="k4s" checked style="width:auto"> Fotodiodo de silício (até ≈ 1100 nm)</label>
+<div class="out"><div>LDR vê<strong id="o4l"></strong></div><div>Silício vê<strong id="o4s"></strong></div></div>
+<p style="font-size:14px;color:var(--mute)">Para medir energia de verdade usa-se um <b>piranômetro</b>, com resposta quase plana em todo o espectro solar.</p>
+</div>
+</div>
+<details open><summary>Principais limitações</summary>
+<ul>
+<li><b>Resposta espectral limitada:</b> o sensor ignora parte da energia (infravermelho, ultravioleta).</li>
+<li><b>Não linearidade e saturação:</b> o LDR é logarítmico; o fotodiodo satura no circuito de leitura.</li>
+<li><b>Temperatura:</b> a corrente de escuro e a sensibilidade variam com a temperatura.</li>
+<li><b>Resposta angular:</b> a leitura depende do cosseno e da janela/encapsulamento do sensor.</li>
+<li><b>Lentidão e histerese do LDR:</b> a leitura demora a estabilizar e depende do histórico de luz.</li>
+<li><b>Luz difusa e refletida:</b> nuvens e o entorno alteram a leitura sem mudar a direção do Sol.</li>
+<li><b>Calibração:</b> sem calibração contra um padrão, os valores só servem para comparação relativa.</li>
+</ul></details>
+<div class="ans"><h3>Resposta</h3>LDRs e fotodiodos são ótimos para <b>detectar direção e comparar intensidades relativas</b>, ideais em robôs seguidores de Sol. Mas não medem a energia solar com exatidão: a resposta espectral, a temperatura, a saturação e a geometria introduzem erros. Para energia absoluta, é preciso um instrumento calibrado.</div>
+</section>
+
+</main>
+<footer>Trabalho de Física: sensores de luz e radiação solar. Os modelos são simplificados e os valores numéricos são típicos, para fins didáticos. Hospede este arquivo no GitHub Pages (index.html na raiz do repositório).</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const fmt=(x,d=2)=>x.toLocaleString('pt-BR',{maximumFractionDigits:d,minimumFractionDigits:d});
+function axes(c,x,y,w,h,xl,yl){c.strokeStyle=css('--grid');c.fillStyle=css('--mute');c.font='13px system-ui';c.lineWidth=1;
+ for(let i=0;i<=4;i++){let yy=y+h-h*i/4;c.beginPath();c.moveTo(x,yy);c.lineTo(x+w,yy);c.stroke()}
+ c.strokeStyle=css('--mute');c.strokeRect(x,y,w,h);c.fillText(xl,x+w/2-60,y+h+34);c.save();c.translate(x-44,y+h/2+40);c.rotate(-Math.PI/2);c.fillText(yl,0,0);c.restore()}
+
+/* ---- 1: LDR x fotodiodo ---- */
+function sol1(){return Math.pow(10,$('s1e').value/100*3)} // 1..1000
+function ldrV(E,g){const lux=E*110,R=20000*Math.pow(lux/10,-g);return[R,3.3*10000/(R+10000)]}
+function phV(E){return Math.min(0.5*5e-6*E*1000,3.3)}
+function draw1(){const E=sol1(),g=$('s1g').value/10,cv=$('c1'),c=cv.getContext('2d');c.clearRect(0,0,600,340);
+ const X=60,Y=15,W=520,H=270;axes(c,X,Y,W,H,'Irradiância (W/m², escala log)','Tensão (V)');
+ const px=e=>X+W*Math.log10(e)/3,py=v=>Y+H-H*v/3.3;
+ for(let i=0;i<=3;i++){c.fillStyle=css('--mute');c.fillText(Math.pow(10,i),px(Math.pow(10,i))-8,Y+H+16)}
+ for(let i=0;i<=3;i++)c.fillText(i*1.1===0?'0':fmt(i*1.1,1),X-30,py(i*1.1)+4);
+ [[ev=>ldrV(ev,g)[1],'--teal','LDR'],[phV,'--sun','Fotodiodo']].forEach(([f,col,nm],k)=>{c.strokeStyle=css(col);c.lineWidth=3;c.beginPath();
+  for(let i=0;i<=120;i++){const e=Math.pow(10,i/40);const p=[px(e),py(f(e))];i?c.lineTo(...p):c.moveTo(...p)}c.stroke();
+  c.fillStyle=css(col);c.fillRect(X+12,Y+10+k*20,14,4);c.fillText(nm,X+32,Y+16+k*20)});
+ c.strokeStyle=css('--red');c.lineWidth=1.5;c.setLineDash([5,4]);c.beginPath();c.moveTo(px(E),Y);c.lineTo(px(E),Y+H);c.stroke();c.setLineDash([]);
+ const[R,V]=ldrV(E,g);$('v1e').textContent=fmt(E,0);$('v1l').textContent=fmt(E*110,0);$('v1g').textContent=fmt(g,1);
+ $('o1r').textContent=R>=1000?fmt(R/1000,1)+' kΩ':fmt(R,0)+' Ω';$('o1v').textContent=fmt(V)+' V';$('o1p').textContent=fmt(phV(E))+' V'}
+['s1e','s1g'].forEach(i=>$(i).oninput=draw1);
+
+/* ---- 2: posições ---- */
+let log2=[];
+function E2(){const a=+$('s2a').value,d=+$('s2d').value/100;return[a,d,500*Math.pow(0.5/d,2)*Math.cos(a*Math.PI/180)]}
+function draw2(){const[a,d,E]=E2(),c=$('c2').getContext('2d');c.clearRect(0,0,600,300);
+ const cx=330,cy=215;c.strokeStyle=css('--sun');c.lineWidth=3;
+ for(let i=-2;i<=2;i++){c.beginPath();c.moveTo(cx-170+i*30,10);c.lineTo(cx+i*30,cy-10);c.stroke();c.fillStyle=css('--sun');c.beginPath();c.arc(cx+i*30,cy-10,3,0,7);c.fill()}
+ c.save();c.translate(cx,cy);c.rotate(a*Math.PI/180);c.fillStyle=css('--teal');c.fillRect(-90,-6,180,12);
+ c.strokeStyle=css('--ink');c.setLineDash([4,4]);c.lineWidth=1;c.beginPath();c.moveTo(0,0);c.lineTo(0,-70);c.stroke();c.restore();
+ c.fillStyle=css('--mute');c.font='13px system-ui';c.fillText('normal do sensor',cx+8,cy-70);c.fillText('raios de luz',20,30);
+ c.fillStyle=css('--ink');c.fillRect(40,270,Math.min(E/5*0.5,320),12);c.fillStyle=css('--mute');c.fillText('E',20,281);
+ $('v2a').textContent=a;$('v2d').textContent=fmt(d);$('o2e').textContent=fmt(E,0)+' W/m²';$('o2f').textContent=fmt(E/500*100,0)+' %'}
+['s2a','s2d'].forEach(i=>$(i).oninput=draw2);
+function tab2(){const m=Math.max(...log2.map(r=>r[2]));$('t2').innerHTML=log2.map((r,i)=>`<tr><td>${i+1}</td><td>${r[0]}°</td><td>${fmt(r[1])}</td><td>${fmt(r[2],0)}</td><td>${fmt(r[2]/m*100,0)} %</td></tr>`).join('')}
+$('b2r').onclick=()=>{log2.push(E2());tab2()};$('b2c').onclick=()=>{log2=[];tab2()};
+
+/* ---- 3: rastreador ---- */
+let phi=-40,sweep=null,trace=[],last=performance.now();
+const resp=(al,ps)=>Math.max(0,Math.cos((al-ps)*Math.PI/180));
+function draw3(){const al=+$('s3a').value,c=$('c3').getContext('2d');c.clearRect(0,0,600,320);
+ const ox=300,oy=270,sx=ox+220*Math.sin(al*Math.PI/180),sy=oy-220*Math.cos(al*Math.PI/180);
+ c.strokeStyle=css('--sun');c.lineWidth=2;c.setLineDash([6,5]);c.beginPath();c.moveTo(sx,sy);c.lineTo(ox,oy);c.stroke();c.setLineDash([]);
+ c.fillStyle=css('--sun');c.beginPath();c.arc(sx,sy,18,0,7);c.fill();
+ c.strokeStyle=css('--grid');c.beginPath();c.arc(ox,oy,220,Math.PI*1.05,Math.PI*1.95);c.stroke();
+ c.save();c.translate(ox,oy);c.fillStyle=css('--ink');c.fillRect(-12,-4,24,34);c.rotate(phi*Math.PI/180);
+ c.fillStyle=css('--teal');c.fillRect(-70,-14,140,10);c.fillStyle=css('--ink');c.beginPath();c.arc(-60,-18,6,0,7);c.arc(60,-18,6,0,7);c.fill();
+ c.strokeStyle=css('--mute');c.lineWidth=1;c.beginPath();c.moveTo(0,-14);c.lineTo(0,-70);c.stroke();c.restore();
+ c.fillStyle=css('--mute');c.font='13px system-ui';c.fillText('Sol',sx+22,sy+4);c.fillText('painel + 2 sensores',ox-60,oy+50)}
+function loop(t){const dt=Math.min((t-last)/1000,.05);last=t;const al=+$('s3a').value;
+ const L=resp(al,phi-20),R=resp(al,phi+20),e=R-L;
+ if(sweep){phi+=70*dt;trace.push([phi,resp(al,phi)]);if(phi>=80){const b=trace.reduce((m,p)=>p[1]>m[1]?p:m);phi=b[0];sweep=null;drawTrace(b)}}
+ else if($('k3').checked){phi+=150*e*dt;phi=Math.max(-85,Math.min(85,phi))}
+ $('v3a').textContent=al;$('o3l').textContent=fmt(L);$('o3r').textContent=fmt(R);$('o3e').textContent=fmt(e);
+ $('o3p').textContent=fmt(phi,1)+'°';$('o3w').textContent=fmt(resp(al,phi)*100,0)+' %';draw3();requestAnimationFrame(loop)}
+$('b3').onclick=()=>{trace=[];phi=-80;sweep=true};
+function drawTrace(b){const c=$('c3b').getContext('2d');c.clearRect(0,0,600,150);axes(c,50,8,520,100,'Ângulo do painel φ (graus)','Potência');
+ c.strokeStyle=css('--teal');c.lineWidth=2.5;c.beginPath();trace.forEach((p,i)=>{const x=50+520*(p[0]+80)/160,y=108-100*p[1];i?c.lineTo(x,y):c.moveTo(x,y)});c.stroke();
+ c.fillStyle=css('--red');c.beginPath();c.arc(50+520*(b[0]+80)/160,108-100*b[1],5,0,7);c.fill();c.fillStyle=css('--mute');c.fillText('máximo em '+fmt(b[0],0)+'°',60,24)}
+
+/* ---- 4: espectro ---- */
+const lam=[];for(let l=300;l<=2500;l+=10)lam.push(l);
+const planck=l=>{const m=l*1e-9;return 1/(Math.pow(m,5)*(Math.exp(1.4388e-2/(m*5778))-1))};
+const sun=lam.map(planck),smax=Math.max(...sun);
+const rL=l=>Math.exp(-Math.pow((l-540)/70,2)/2);
+const rS=l=>l<350||l>1100?0:l<=950?0.15+0.85*(l-350)/600:1-(l-950)/150;
+function frac(r){let a=0,b=0;lam.forEach((l,i)=>{a+=sun[i]*r(l);b+=sun[i]});return a/b}
+function draw4(){const c=$('c4').getContext('2d');c.clearRect(0,0,600,340);const X=50,Y=15,W=530,H=270;axes(c,X,Y,W,H,'Comprimento de onda (nm)','Intensidade relativa');
+ const px=l=>X+W*(l-300)/2200,py=v=>Y+H-H*v;c.fillStyle=css('--mute');[500,1000,1500,2000,2500].forEach(l=>c.fillText(l,px(l)-14,Y+H+16));
+ const plot=(f,col,fill)=>{c.beginPath();lam.forEach((l,i)=>{const p=[px(l),py(f(l,i))];i?c.lineTo(...p):c.moveTo(...p)});c.strokeStyle=css(col);c.lineWidth=2.5;c.stroke();
+  if(fill){c.lineTo(px(2500),py(0));c.lineTo(px(300),py(0));c.globalAlpha=.15;c.fillStyle=css(col);c.fill();c.globalAlpha=1}};
+ plot((l,i)=>sun[i]/smax,'--sun',true);
+ if($('k4l').checked)plot(rL,'--teal',true);
+ if($('k4s').checked)plot(rS,'--red',true);
+ c.fillStyle=css('--sun');c.fillText('Espectro solar',px(1400),py(.45));
+ $('o4l').textContent=fmt(frac(rL)*100,0)+' %';$('o4s').textContent=fmt(frac(rS)*100,0)+' %'}
+['k4l','k4s'].forEach(i=>$(i).onchange=draw4);
+
+draw1();draw2();draw4();requestAnimationFrame(loop);
+matchMedia('(prefers-color-scheme:dark)').onchange=()=>{draw1();draw2();draw4()};
+</script>
+</body>
+</html>
